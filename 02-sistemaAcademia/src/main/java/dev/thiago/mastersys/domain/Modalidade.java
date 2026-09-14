@@ -10,9 +10,11 @@ public class Modalidade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true, length = 100)
     private String nome;
 
-    private Boolean ativo = true;
+    @Column(name = "ativa", nullable = false)
+    private Boolean ativa = true;
 
     public Long getId() {
         return id;
@@ -30,11 +32,11 @@ public class Modalidade {
         this.nome = nome;
     }
 
-    public Boolean getAtivo() {
-        return ativo;
+    public Boolean getAtiva() {
+        return ativa;
     }
 
-    public void setAtivo(Boolean ativo) {
-        this.ativo = ativo;
+    public void setAtiva(Boolean ativa) {
+        this.ativa = ativa;
     }
 }

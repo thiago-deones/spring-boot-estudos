@@ -27,13 +27,14 @@ public class MatriculaModalidade {
     private Modalidade modalidade;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "graduacao_id")
+    @JoinColumn(name = "graduacoes_id")
     private Graduacao graduacao;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plano_id")
     private Plano plano;
 
+    @PrePersist
     public void prePersist() {
         if (dataInicio == null) {
             dataInicio = LocalDate.now();
