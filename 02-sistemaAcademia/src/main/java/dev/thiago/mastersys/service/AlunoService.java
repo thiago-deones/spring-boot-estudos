@@ -1,9 +1,12 @@
 package dev.thiago.mastersys.service;
 
 import dev.thiago.mastersys.domain.Aluno;
+import dev.thiago.mastersys.dto.AlunoFiltroRequest;
 import dev.thiago.mastersys.dto.AlunoRequest;
 import dev.thiago.mastersys.dto.AlunoResponse;
+import dev.thiago.mastersys.exception.RegraNegocioException;
 import dev.thiago.mastersys.repository.AlunoRepository;
+import dev.thiago.mastersys.specification.AlunoSpecificattion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,7 +22,7 @@ public class AlunoService {
 
     public AlunoResponse cadastrar(AlunoRequest request) {
         if (request.email() != null && alunoRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Já existe um aluno cadastrado com este email");
+            throw new RegraNegocioException("Já existe um aluno cadastrado com este email");
         }
 
         Aluno aluno = request.toEntity();
@@ -27,8 +30,9 @@ public class AlunoService {
         return AlunoResponse.fromEntity(alunoSalvo);
     }
 
-    public Page<AlunoResponse> listar(Pageable pageable) {
-        return alunoRepository.findAll(pageable).map(AlunoResponse::fromEntity);
+    public Page<AlunoResponse> listar(AlunoFiltroRequest filtro, Pageable pageable) {
+        return alunoRepository.findAll(AlunoSpecificattion.comFiltros(filtro), pageable)
+                .map(AlunoResponse::fromEntity);
     }
 
     public AlunoResponse buscarPorId(Long id) {
@@ -49,6 +53,6 @@ public class AlunoService {
     }
 
     public Aluno buscarEntidadePorId(Long id) {
-        return alunoRepository.findById(id).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        return alunoRepository.findById(id).orElseThrow(() -> new RegraNegocioException("Aluno não encontrado"));
     }
 }
