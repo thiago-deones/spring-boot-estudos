@@ -1,0 +1,51 @@
+@baseUrl = http://localhost:8080
+
+### Cadastrar aluno
+POST {{baseUrl}}/alunos
+Content-Type: application/json
+
+{
+  "nome": "João da Silva",
+  "dataNascimento": "1998-05-02",
+  "sexo": "M",
+  "telefone": "32482348",
+  "celular": "232342341",
+  "observacao":"Aluno iniciante",
+  "endereco": "rua das flores",
+  "numero": "123",
+  "complemento": "apartamento 203",
+  "cidade": "centro",
+  "estado": "SC",
+  "cep": "238129238"
+}
+
+### Listar Alunos
+GET {{baseUrl}}/alunos
+
+### Listar Alunos com paginação
+GET {{baseUrl}}/alunos?page=0&size=10&sort=nome,asc
+
+### Buscar aluno por ID
+GET {{baseUrl}}/alunos/1
+
+### Atualizar aluno
+PUT {{baseUrl}}/alunos/1
+Content-Type:
+
+{
+  "nome": "João da Silva atualizado",
+  "dataNascimento": "1998-05-02",
+  "sexo": "M",
+  "telefone": "32482348",
+  "celular": "232342341",
+  "observacao":"Aluno intermediario",
+  "endereco": "rua das orquideas",
+  "numero": "333",
+  "complemento": "casa",
+  "cidade": "centro",
+  "estado": "SC",
+  "cep": "238129238"
+}
+
+### Excluir aluno
+DELETE {{baseUrl}}/alunos/1
