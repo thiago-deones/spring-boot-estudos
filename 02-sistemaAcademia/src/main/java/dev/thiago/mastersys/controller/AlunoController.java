@@ -1,5 +1,6 @@
 package dev.thiago.mastersys.controller;
 
+import dev.thiago.mastersys.doc.AlunoControllerDoc;
 import dev.thiago.mastersys.dto.AlunoFiltroRequest;
 import dev.thiago.mastersys.dto.AlunoRequest;
 import dev.thiago.mastersys.dto.AlunoResponse;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/alunos")
-public class AlunoController {
+public class AlunoController implements AlunoControllerDoc {
 
     private final AlunoService alunoService;
 
