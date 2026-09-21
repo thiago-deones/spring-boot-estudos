@@ -7,6 +7,7 @@ import com.ebook.__livraria.exception.RecursoNaoEncontradoException;
 import com.ebook.__livraria.exception.RegraDeNegocioException;
 import com.ebook.__livraria.repository.LivroRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,11 +24,8 @@ public class LivroService {
         }
 
         Livro livro = new Livro();
-        livro.setTitulo(request.getTitulo());
-        livro.setAutor(request.getAutor());
-        livro.setIsbn(request.getIsbn());
-        livro.setPreco(request.getPreco());
-        livro.setDataPublicacao(request.getDataPublicacao());
+
+        request.preencher(livro);
 
         Livro livroSalvo = livroRepository.save(livro);
         return LivroResponse.fromEntity(livroSalvo);

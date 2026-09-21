@@ -26,7 +26,12 @@ public class LivroRequest {
     @NotNull(message = "A data de publicação é obrigatória")
     private LocalDate dataPublicacao;
 
-    public LivroRequest(String cleanCode, String s, String s1, BigDecimal bigDecimal, LocalDate of) {
+    public LivroRequest(String titulo, String autor, String isbn, BigDecimal preco, LocalDate dataPublicacao) {
+        this.titulo = titulo;
+        this.autor = autor;
+        this.isbn = isbn;
+        this.preco = preco;
+        this.dataPublicacao = dataPublicacao;
     }
 
     public String getTitulo() {

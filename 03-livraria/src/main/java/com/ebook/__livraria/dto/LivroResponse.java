@@ -14,6 +14,9 @@ public record LivroResponse(
         LocalDate dataPublicacao
 ) {
     public static LivroResponse fromEntity(Livro livro){
+        if (livro == null) {
+            return null;
+        }
         return new LivroResponse(
                 livro.getId(),
                 livro.getTitulo(),

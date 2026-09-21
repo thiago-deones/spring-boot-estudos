@@ -1,10 +1,16 @@
 package com.ebook.__livraria.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "livro")
 public class Livro {
@@ -28,54 +34,4 @@ public class Livro {
     @Column(name = "data_publicacao")
     private LocalDate dataPublicacao;
 
-    public Livro() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public String getAutor() {
-        return autor;
-    }
-
-    public void setAutor(String autor) {
-        this.autor = autor;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
-
-    public BigDecimal getPreco() {
-        return preco;
-    }
-
-    public void setPreco(BigDecimal preco) {
-        this.preco = preco;
-    }
-
-    public LocalDate getDataPublicacao() {
-        return dataPublicacao;
-    }
-
-    public void setDataPublicacao(LocalDate dataPublicacao) {
-        this.dataPublicacao = dataPublicacao;
-    }
 }
