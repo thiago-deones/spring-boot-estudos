@@ -1,5 +1,6 @@
 package com.lojavirtual.pedidos.dtos;
 
+import com.lojavirtual.pedidos.domain.Cliente;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -20,4 +21,10 @@ public record ClienteRequest(
         String cpf
 
 ) {
+
+    public void preencher(Cliente cliente) {
+        cliente.setNome(nome);
+        cliente.setEmail(email);
+        cliente.setCpf(cpf);
+    }
 }
