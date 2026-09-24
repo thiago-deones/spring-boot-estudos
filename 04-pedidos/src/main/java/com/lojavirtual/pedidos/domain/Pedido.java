@@ -1,5 +1,6 @@
 package com.lojavirtual.pedidos.domain;
 
+import com.lojavirtual.pedidos.domain.enums.FormaPagamento;
 import com.lojavirtual.pedidos.domain.enums.StatusPedido;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,5 +27,8 @@ public class Pedido {
 
     @Enumerated(EnumType.STRING)
     private StatusPedido status = StatusPedido.ABERTO;
+
+    @Enumerated(EnumType.STRING)
+    private FormaPagamento formaPagamento;
 
 }

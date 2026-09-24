@@ -1,5 +1,6 @@
 package com.lojavirtual.pedidos.dtos;
 
+import com.lojavirtual.pedidos.domain.Produto;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
@@ -19,4 +20,10 @@ public record ProdutoRequest(
         Integer quantidadeEstoque
 
 ) {
+
+    public void preencher(Produto produto) {
+        produto.setNome(nome);
+        produto.setPreco(preco);
+        produto.setQuantidadeEstoque(quantidadeEstoque);
+    }
 }
