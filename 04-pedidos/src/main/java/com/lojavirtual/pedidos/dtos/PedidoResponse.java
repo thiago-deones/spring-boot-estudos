@@ -1,11 +1,15 @@
 package com.lojavirtual.pedidos.dtos;
 
+import com.lojavirtual.pedidos.domain.Cliente;
+import com.lojavirtual.pedidos.domain.Pedido;
 import com.lojavirtual.pedidos.domain.enums.FormaPagamento;
 import com.lojavirtual.pedidos.domain.enums.StatusPedido;
+import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+
 
 public record PedidoResponse(
 

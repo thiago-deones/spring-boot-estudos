@@ -31,4 +31,10 @@ public class Pedido {
     @Enumerated(EnumType.STRING)
     private FormaPagamento formaPagamento;
 
+    public void preencher(Pedido pedido) {
+        pedido.setCliente(cliente);
+        pedido.setDataCriacao(dataCriacao);
+        pedido.setFormaPagamento(formaPagamento);
+        pedido.setStatus(status);
+    }
 }
