@@ -21,5 +21,4 @@ public record PedidoResponse(
        StatusPedido statusPedido,
        BigDecimal valorTotal
 
-) {
-}
+) {}

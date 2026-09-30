@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,6 +24,9 @@ public class Pedido {
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    private List<ItemPedido> itens = new ArrayList<>();
+
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
 
@@ -30,11 +35,4 @@ public class Pedido {
 
     @Enumerated(EnumType.STRING)
     private FormaPagamento formaPagamento;
-
-    public void preencher(Pedido pedido) {
-        pedido.setCliente(cliente);
-        pedido.setDataCriacao(dataCriacao);
-        pedido.setFormaPagamento(formaPagamento);
-        pedido.setStatus(status);
-    }
 }

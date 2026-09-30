@@ -39,7 +39,7 @@ public class ProdutoService {
     }
 
     public ProdutoResponse atualizar(Long id, ProdutoRequest request) {
-        if (produtoRepository.existyByNomeAndIdNot(request.nome(), id)) {
+        if (produtoRepository.existsByNomeAndIdNot(request.nome(), id)) {
             throw new RuntimeException(
                     "Já existe outro produto com este nome " + request.nome()
             );

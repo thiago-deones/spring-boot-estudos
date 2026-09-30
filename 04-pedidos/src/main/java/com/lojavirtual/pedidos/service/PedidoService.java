@@ -4,19 +4,15 @@ import com.lojavirtual.pedidos.domain.Cliente;
 import com.lojavirtual.pedidos.domain.ItemPedido;
 import com.lojavirtual.pedidos.domain.Pedido;
 import com.lojavirtual.pedidos.domain.Produto;
-import com.lojavirtual.pedidos.domain.enums.FormaPagamento;
-import com.lojavirtual.pedidos.domain.enums.StatusPedido;
 import com.lojavirtual.pedidos.dtos.*;
 import com.lojavirtual.pedidos.repository.ClienteRepository;
 import com.lojavirtual.pedidos.repository.PedidoRepository;
 import com.lojavirtual.pedidos.repository.ProdutoRepository;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -31,9 +27,11 @@ public class PedidoService {
 
         Cliente cliente = buscarClientePorId(pedidoRequest.clienteId());
 
-        List<ItemPedidoRequest> itens = pedidoRequest.itens();
+        Pedido pedido = new Pedido();
+        pedido.setCliente(cliente);
 
         for (ItemPedidoRequest item : pedidoRequest.itens()) {
+
             Produto produto = buscarProdutoPorId(item.produtoId());
 
             Integer quantidade = item.quantidade();
@@ -42,18 +40,62 @@ public class PedidoService {
 
             itemPedido.setProduto(produto);
             itemPedido.setQuantidade(quantidade);
+            itemPedido.setPrecoUnitario(produto.getPreco());
+
+            itemPedido.setPedido(pedido);
+            pedido.getItens().add(itemPedido);
         }
 
+        pedido.setFormaPagamento(pedidoRequest.formaPagamento());
 
+        Pedido pedidoSalvo = pedidoRepository.save(pedido);
+
+        List<ItemPedidoResponse> itensResponse = pedidoSalvo.getItens()
+                .stream()
+                .map(this::criarItemResponse)
+                .toList();
+
+        BigDecimal valorTotal = itensResponse.stream()
+                .map(ItemPedidoResponse::subtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return new PedidoResponse(
+                pedidoSalvo.getId(),
+                pedidoSalvo.getCliente().getId(),
+                itensResponse,
+                pedidoSalvo.getDataCriacao(),
+                pedidoSalvo.getFormaPagamento(),
+                pedidoSalvo.getStatus(),
+                valorTotal
+        );
     }
 
-    public Pageable<PedidoRequest> listar(Pageable pageable) {
-        return pedidoRepository;
-    }
+//  // public Pageable<PedidoRequest> listar(Pageable pageable) {
+//        return pedidoRepository;
+//    }
 
-    public ProdutoRepository buscarPedidoId(Long id) {
-        Pedido pedido = buscarPedidoPorId(id);
-        return pedidoRepository.fromEntidy(pedido);
+    public PedidoResponse buscarPedidoId(Long id) {
+
+        Pedido pedido =buscarPedidoPorId(id);
+
+        List<ItemPedidoResponse> itensResponse = pedido.getItens()
+                .stream()
+                .map(this::criarItemResponse)
+                .toList();
+
+        BigDecimal valorTotal = itensResponse.stream()
+                .map(ItemPedidoResponse::subtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return new PedidoResponse(
+                pedido.getId(),
+                pedido.getCliente().getId(),
+                itensResponse,
+                pedido.getDataCriacao(),
+                pedido.getFormaPagamento(),
+                pedido.getStatus(),
+                valorTotal
+        );
     }
 
     public void deletar(Long id) {
@@ -61,16 +103,16 @@ public class PedidoService {
         pedidoRepository.delete(pedido);
     }
 
-    public PedidoResponse atualizar(Long id, PedidoRequest request) {
-
-        Pedido pedido = buscarPedidoPorId(id);
-
-        request.preencher(pedido);
-
-        Pedido pedidoAtualizado = pedidoRepository.save(pedido);
-
-        return PedidoResponse.fromEntity(pedidoAtualizado);
-    }
+//    public PedidoResponse atualizar(Long id, PedidoRequest request) {
+//
+//        Pedido pedido = buscarPedidoPorId(id);
+//
+//        request.preencher(pedido);
+//
+//        Pedido pedidoAtualizado = pedidoRepository.save(pedido);
+//
+//        return PedidoResponse.fromEntity(pedidoAtualizado);
+//    }
 
     private Cliente buscarClientePorId(Long id) {
         return clienteRepository.findById(id)
@@ -91,5 +133,20 @@ public class PedidoService {
                 .orElseThrow(() -> new RuntimeException(
                         "Pedido não existe com este ID: " + id
                 ));
+    }
+
+    private ItemPedidoResponse criarItemResponse(ItemPedido item) {
+
+        BigDecimal subtotal = item.getPrecoUnitario()
+                .multiply(BigDecimal.valueOf(item.getQuantidade()));
+
+        return new ItemPedidoResponse(
+                item.getId(),
+                item.getProduto().getId(),
+                item.getProduto().getNome(),
+                item.getQuantidade(),
+                item.getPrecoUnitario(),
+                subtotal
+        );
     }
 }
