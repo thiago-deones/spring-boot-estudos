@@ -28,7 +28,7 @@ public class Pedido {
     private List<ItemPedido> itens = new ArrayList<>();
 
     @Column(name = "data_criacao")
-    private LocalDateTime dataCriacao;
+    private LocalDateTime dataCriacao = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
     private StatusPedido status = StatusPedido.ABERTO;

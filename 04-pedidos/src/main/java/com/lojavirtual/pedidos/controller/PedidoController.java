@@ -20,4 +20,6 @@ public class PedidoController {
     public PedidoResponse cadastrar(@RequestBody @Valid PedidoRequest request) {
         return pedidoService.cadastrar(request);
     }
+
+
 }

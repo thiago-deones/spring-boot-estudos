@@ -11,6 +11,7 @@ import com.lojavirtual.pedidos.repository.ProdutoRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,18 +24,25 @@ public class PedidoService {
     private final ClienteRepository clienteRepository;
     private final ProdutoRepository produtoRepository;
 
+    @Transactional
     public PedidoResponse cadastrar(PedidoRequest pedidoRequest) {
 
         Cliente cliente = buscarClientePorId(pedidoRequest.clienteId());
 
         Pedido pedido = new Pedido();
+
         pedido.setCliente(cliente);
+
 
         for (ItemPedidoRequest item : pedidoRequest.itens()) {
 
             Produto produto = buscarProdutoPorId(item.produtoId());
 
             Integer quantidade = item.quantidade();
+
+            if (item.quantidade() > produto.getQuantidadeEstoque()) {
+                throw new RuntimeException("Estoque insuficiente quantidade disponive: " + produto.getQuantidadeEstoque());
+            }
 
             ItemPedido itemPedido = new ItemPedido();
 
@@ -43,6 +51,11 @@ public class PedidoService {
             itemPedido.setPrecoUnitario(produto.getPreco());
 
             itemPedido.setPedido(pedido);
+
+            produto.setQuantidadeEstoque(
+                    produto.getQuantidadeEstoque() - quantidade
+            );
+
             pedido.getItens().add(itemPedido);
         }
 
@@ -76,7 +89,7 @@ public class PedidoService {
 
     public PedidoResponse buscarPedidoId(Long id) {
 
-        Pedido pedido =buscarPedidoPorId(id);
+        Pedido pedido = buscarPedidoPorId(id);
 
         List<ItemPedidoResponse> itensResponse = pedido.getItens()
                 .stream()
