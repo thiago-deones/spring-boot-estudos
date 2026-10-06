@@ -5,6 +5,8 @@ import com.lojavirtual.pedidos.dtos.PedidoResponse;
 import com.lojavirtual.pedidos.service.PedidoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,12 @@ public class PedidoController {
     public PedidoResponse cadastrar(@RequestBody @Valid PedidoRequest request) {
         return pedidoService.cadastrar(request);
     }
+
+    @GetMapping
+    public Page<PedidoResponse> listar(Pageable pageable) {
+        return pedidoService.listar(pageable);
+    }
+
 
     @GetMapping("/{id}")
     public PedidoResponse buscarPorId(@PathVariable Long id) {

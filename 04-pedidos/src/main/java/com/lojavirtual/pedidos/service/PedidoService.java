@@ -10,6 +10,8 @@ import com.lojavirtual.pedidos.repository.PedidoRepository;
 import com.lojavirtual.pedidos.repository.ProdutoRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,33 +85,16 @@ public class PedidoService {
         );
     }
 
-//  // public Pageable<PedidoRequest> listar(Pageable pageable) {
-//        return pedidoRepository;
-//    }
+    public Page<PedidoResponse> listar(Pageable pageable) {
+        return pedidoRepository.findAll(pageable)
+                .map(this::criarPedidoResponse);
+
+    }
 
     public PedidoResponse buscarPorId(Long id) {
 
         Pedido pedido = buscarPedidoPorId(id);
-
-
-        List<ItemPedidoResponse> itensResponse = pedido.getItens()
-                .stream()
-                .map(this::criarItemResponse)
-                .toList();
-
-        BigDecimal valorTotal = itensResponse.stream()
-                .map(ItemPedidoResponse::subtotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        return new PedidoResponse(
-                pedido.getId(),
-                pedido.getCliente().getId(),
-                itensResponse,
-                pedido.getDataCriacao(),
-                pedido.getFormaPagamento(),
-                pedido.getStatus(),
-                valorTotal
-        );
+        return criarPedidoResponse(pedido);
     }
 
     public void deletar(Long id) {
@@ -161,6 +146,28 @@ public class PedidoService {
                 item.getQuantidade(),
                 item.getPrecoUnitario(),
                 subtotal
+        );
+    }
+
+    private PedidoResponse criarPedidoResponse(Pedido pedido) {
+
+        List<ItemPedidoResponse> itensResponse = pedido.getItens()
+                .stream()
+                .map(this::criarItemResponse)
+                .toList();
+
+        BigDecimal valorTotal = itensResponse.stream()
+                .map(ItemPedidoResponse::subtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return new PedidoResponse(
+                pedido.getId(),
+                pedido.getCliente().getId(),
+                itensResponse,
+                pedido.getDataCriacao(),
+                pedido.getFormaPagamento(),
+                pedido.getStatus(),
+                valorTotal
         );
     }
 }
