@@ -21,5 +21,11 @@ public class PedidoController {
         return pedidoService.cadastrar(request);
     }
 
+    @GetMapping("/{id}")
+    public PedidoResponse buscarPorId(@PathVariable Long id) {
+        return pedidoService.buscarPorId(id);
+    }
+
+
 
 }

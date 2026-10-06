@@ -87,9 +87,10 @@ public class PedidoService {
 //        return pedidoRepository;
 //    }
 
-    public PedidoResponse buscarPedidoId(Long id) {
+    public PedidoResponse buscarPorId(Long id) {
 
         Pedido pedido = buscarPedidoPorId(id);
+
 
         List<ItemPedidoResponse> itensResponse = pedido.getItens()
                 .stream()
