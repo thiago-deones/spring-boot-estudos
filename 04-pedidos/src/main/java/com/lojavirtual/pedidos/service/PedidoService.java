@@ -98,31 +98,6 @@ public class PedidoService {
         return criarPedidoResponse(pedido);
     }
 
-//    @Transactional
-//    public void deletar(Long id) {
-//
-//        Pedido pedido = buscarPedidoPorId(id);
-//
-//        if (pedido.getStatus() != StatusPedido.ABERTO) {
-//            throw new RuntimeException(
-//                    "Só é possível excluir pedidos em aberto"
-//            );
-//        }
-//
-//        for (ItemPedido item : pedido.getItens()) {
-//
-//            Produto produto = item.getProduto();
-//
-//            produto.setQuantidadeEstoque(
-//                    produto.getQuantidadeEstoque() + item.getQuantidade()
-//            );
-//
-//        }
-//
-//        pedidoRepository.delete(pedido);
-//    }
-
-
     @Transactional
     public PedidoResponse cancelar(Long id) {
 
@@ -148,16 +123,6 @@ public class PedidoService {
 
         return criarPedidoResponse(pedido);
     }
-//    public PedidoResponse atualizar(Long id, PedidoRequest request) {
-//
-//        Pedido pedido = buscarPedidoPorId(id);
-//
-//        request.preencher(pedido);
-//
-//        Pedido pedidoAtualizado = pedidoRepository.save(pedido);
-//
-//        return PedidoResponse.fromEntity(pedidoAtualizado);
-//    }
 
     private Cliente buscarClientePorId(Long id) {
         return clienteRepository.findById(id)

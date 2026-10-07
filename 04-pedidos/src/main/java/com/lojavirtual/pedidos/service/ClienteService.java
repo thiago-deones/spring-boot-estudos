@@ -58,6 +58,6 @@ public class ClienteService {
 
     private Cliente buscarEntidadePorId(Long id) {
         return clienteRepository.findById(id)
-                .orElseThrow( ()-> new RuntimeException("Cliente não encontrado com o ID " + id));
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado com o ID " + id));
     }
 }
