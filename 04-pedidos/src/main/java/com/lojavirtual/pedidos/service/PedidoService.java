@@ -98,14 +98,40 @@ public class PedidoService {
         return criarPedidoResponse(pedido);
     }
 
+//    @Transactional
+//    public void deletar(Long id) {
+//
+//        Pedido pedido = buscarPedidoPorId(id);
+//
+//        if (pedido.getStatus() != StatusPedido.ABERTO) {
+//            throw new RuntimeException(
+//                    "Só é possível excluir pedidos em aberto"
+//            );
+//        }
+//
+//        for (ItemPedido item : pedido.getItens()) {
+//
+//            Produto produto = item.getProduto();
+//
+//            produto.setQuantidadeEstoque(
+//                    produto.getQuantidadeEstoque() + item.getQuantidade()
+//            );
+//
+//        }
+//
+//        pedidoRepository.delete(pedido);
+//    }
+
+
     @Transactional
-    public void deletar(Long id) {
+    public PedidoResponse cancelar(Long id) {
 
         Pedido pedido = buscarPedidoPorId(id);
 
-        if (pedido.getStatus() != StatusPedido.ABERTO) {
+        if (pedido.getStatus() == StatusPedido.FINALIZADO
+                || pedido.getStatus() == StatusPedido.CANCELADO) {
             throw new RuntimeException(
-                    "Só é possível excluir pedidos em aberto"
+                    "Pedido não pode ser cancelado. Motivo : ou ele ja foi cancelado ou finalizado."
             );
         }
 
@@ -117,11 +143,11 @@ public class PedidoService {
                     produto.getQuantidadeEstoque() + item.getQuantidade()
             );
 
+            pedido.setStatus(StatusPedido.CANCELADO);
         }
 
-        pedidoRepository.delete(pedido);
+        return criarPedidoResponse(pedido);
     }
-
 //    public PedidoResponse atualizar(Long id, PedidoRequest request) {
 //
 //        Pedido pedido = buscarPedidoPorId(id);

@@ -34,6 +34,10 @@ public class PedidoController {
         return pedidoService.buscarPorId(id);
     }
 
+    @PatchMapping("/{id}")
+    public PedidoResponse cancelar(@PathVariable Long id) {
+        return pedidoService.cancelar(id);
+    }
 
 
 }
