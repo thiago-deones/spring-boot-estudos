@@ -33,7 +33,7 @@ public class ProdutoService {
                 .map(ProdutoResponse::fromEntity);
     }
 
-    public ProdutoResponse buscar(Long id) {
+    public ProdutoResponse buscarPorId(Long id) {
         Produto produto = buscarEntidadeById(id);
         return ProdutoResponse.fromEntity(produto);
     }
