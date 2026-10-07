@@ -4,6 +4,7 @@ import com.lojavirtual.pedidos.domain.Cliente;
 import com.lojavirtual.pedidos.domain.ItemPedido;
 import com.lojavirtual.pedidos.domain.Pedido;
 import com.lojavirtual.pedidos.domain.Produto;
+import com.lojavirtual.pedidos.domain.enums.StatusPedido;
 import com.lojavirtual.pedidos.dtos.*;
 import com.lojavirtual.pedidos.repository.ClienteRepository;
 import com.lojavirtual.pedidos.repository.PedidoRepository;
@@ -97,8 +98,27 @@ public class PedidoService {
         return criarPedidoResponse(pedido);
     }
 
+    @Transactional
     public void deletar(Long id) {
+
         Pedido pedido = buscarPedidoPorId(id);
+
+        if (pedido.getStatus() != StatusPedido.ABERTO) {
+            throw new RuntimeException(
+                    "Só é possível excluir pedidos em aberto"
+            );
+        }
+
+        for (ItemPedido item : pedido.getItens()) {
+
+            Produto produto = item.getProduto();
+
+            produto.setQuantidadeEstoque(
+                    produto.getQuantidadeEstoque() + item.getQuantidade()
+            );
+
+        }
+
         pedidoRepository.delete(pedido);
     }
 
