@@ -3,6 +3,8 @@ package com.lojavirtual.pedidos.service;
 import com.lojavirtual.pedidos.domain.Produto;
 import com.lojavirtual.pedidos.dtos.ProdutoRequest;
 import com.lojavirtual.pedidos.dtos.ProdutoResponse;
+import com.lojavirtual.pedidos.exception.RecursoNaoEncontradoException;
+import com.lojavirtual.pedidos.exception.RegraDeNegocioException;
 import com.lojavirtual.pedidos.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +19,7 @@ public class ProdutoService {
 
     public ProdutoResponse cadastrar(ProdutoRequest request) {
         if (produtoRepository.existsByNome(request.nome())) {
-            throw new RuntimeException(
+            throw new RegraDeNegocioException(
                     "Já existe um produto com este nome: " + request.nome()
             );
         }
@@ -40,7 +42,7 @@ public class ProdutoService {
 
     public ProdutoResponse atualizar(Long id, ProdutoRequest request) {
         if (produtoRepository.existsByNomeAndIdNot(request.nome(), id)) {
-            throw new RuntimeException(
+            throw new RecursoNaoEncontradoException(
                     "Já existe outro produto com este nome " + request.nome()
             );
         }
@@ -57,6 +59,6 @@ public class ProdutoService {
 
     private Produto buscarEntidadeById(Long id) {
         return produtoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Não existe este ID: " + id));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe este ID: " + id));
     }
 }

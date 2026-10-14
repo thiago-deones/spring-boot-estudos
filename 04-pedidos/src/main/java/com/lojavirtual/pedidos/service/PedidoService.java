@@ -6,6 +6,8 @@ import com.lojavirtual.pedidos.domain.Pedido;
 import com.lojavirtual.pedidos.domain.Produto;
 import com.lojavirtual.pedidos.domain.enums.StatusPedido;
 import com.lojavirtual.pedidos.dtos.*;
+import com.lojavirtual.pedidos.exception.RecursoNaoEncontradoException;
+import com.lojavirtual.pedidos.exception.RegraDeNegocioException;
 import com.lojavirtual.pedidos.repository.ClienteRepository;
 import com.lojavirtual.pedidos.repository.PedidoRepository;
 import com.lojavirtual.pedidos.repository.ProdutoRepository;
@@ -44,7 +46,7 @@ public class PedidoService {
             Integer quantidade = item.quantidade();
 
             if (item.quantidade() > produto.getQuantidadeEstoque()) {
-                throw new RuntimeException("Estoque insuficiente quantidade disponive: " + produto.getQuantidadeEstoque());
+                throw new RecursoNaoEncontradoException("Estoque insuficiente quantidade disponive: " + produto.getQuantidadeEstoque());
             }
 
             ItemPedido itemPedido = new ItemPedido();
@@ -105,7 +107,7 @@ public class PedidoService {
 
         if (pedido.getStatus() == StatusPedido.FINALIZADO
                 || pedido.getStatus() == StatusPedido.CANCELADO) {
-            throw new RuntimeException(
+            throw new RegraDeNegocioException(
                     "Pedido não pode ser cancelado. Motivo : ou ele ja foi cancelado ou finalizado."
             );
         }
@@ -126,21 +128,21 @@ public class PedidoService {
 
     private Cliente buscarClientePorId(Long id) {
         return clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new RecursoNaoEncontradoException(
                         "Cliente não existe com este ID: " + id
                 ));
     }
 
     private Produto buscarProdutoPorId(Long id) {
         return produtoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new RecursoNaoEncontradoException(
                         "Produto não existe com este ID: " + id
                 ));
     }
 
     private Pedido buscarPedidoPorId(Long id) {
         return pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new RecursoNaoEncontradoException(
                         "Pedido não existe com este ID: " + id
                 ));
     }

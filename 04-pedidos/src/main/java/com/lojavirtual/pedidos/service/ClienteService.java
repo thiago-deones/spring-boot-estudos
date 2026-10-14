@@ -3,6 +3,8 @@ package com.lojavirtual.pedidos.service;
 import com.lojavirtual.pedidos.domain.Cliente;
 import com.lojavirtual.pedidos.dtos.ClienteRequest;
 import com.lojavirtual.pedidos.dtos.ClienteResponse;
+import com.lojavirtual.pedidos.exception.RecursoNaoEncontradoException;
+import com.lojavirtual.pedidos.exception.RegraDeNegocioException;
 import com.lojavirtual.pedidos.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,7 +20,7 @@ public class ClienteService {
     public ClienteResponse cadastrar(ClienteRequest request) {
 
         if (clienteRepository.existsByCpf(request.cpf())) {
-            throw new RuntimeException(
+            throw new RegraDeNegocioException(
                     "Já existe um cliente cadastrado com este CPF: " + request.cpf()
             );
         }
@@ -41,7 +43,7 @@ public class ClienteService {
 
     public ClienteResponse atualizar(Long id, ClienteRequest request) {
         if (clienteRepository.existsByCpfAndIdNot(request.cpf(), id)) {
-            throw new RuntimeException(
+            throw new RegraDeNegocioException(
                     "Já existe outro cliente cadastrado com este CPF: " + request.cpf()
             );
         }
@@ -58,6 +60,6 @@ public class ClienteService {
 
     private Cliente buscarEntidadePorId(Long id) {
         return clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado com o ID " + id));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado com o ID " + id));
     }
 }
