@@ -3,7 +3,6 @@ package com.lojavirtual.__pedidos.service;
 import com.lojavirtual.pedidos.domain.Cliente;
 import com.lojavirtual.pedidos.dtos.ClienteRequest;
 import com.lojavirtual.pedidos.dtos.ClienteResponse;
-import com.lojavirtual.pedidos.exception.GlobalExceptionHandler;
 import com.lojavirtual.pedidos.exception.RegraDeNegocioException;
 import com.lojavirtual.pedidos.repository.ClienteRepository;
 import com.lojavirtual.pedidos.service.ClienteService;
@@ -80,6 +79,28 @@ public class ClienteServiceTest {
         cliente.setNome("joão");
         cliente.setEmail("joao@email.com");
         cliente.setCpf("12345678900");
+
+        when(clienteRepository.existsByCpf(request.cpf()))
+                .thenReturn(true);
+
+        // ACT + ASSERT
+
+        assertThrows(
+                RegraDeNegocioException.class,
+                () -> clienteService.cadastrar(request)
+        );
+    }
+
+    @Test
+    void deveimpedorCadastroComCpfDuplicado() {
+
+        //ARRANGE
+
+        ClienteRequest request = new ClienteRequest(
+                "João",
+                "joao@email.com",
+                "12345678900"
+        );
 
         when(clienteRepository.existsByCpf(request.cpf()))
                 .thenReturn(true);
