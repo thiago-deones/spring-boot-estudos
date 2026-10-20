@@ -1,4 +1,4 @@
-package com.lojavirtual.__pedidos;
+package com.lojavirtual.pedidos;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.lojavirtual.__pedidos.service;
+package com.lojavirtual.pedidos.service;
 
 import com.lojavirtual.pedidos.domain.Cliente;
 import com.lojavirtual.pedidos.dtos.ClienteRequest;

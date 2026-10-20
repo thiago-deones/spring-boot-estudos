@@ -1,9 +1,11 @@
-package com.lojavirtual.__pedidos.service;
+package com.lojavirtual.pedidos.service;
 
 import com.lojavirtual.pedidos.domain.Cliente;
+import com.lojavirtual.pedidos.domain.ItemPedido;
 import com.lojavirtual.pedidos.domain.Pedido;
 import com.lojavirtual.pedidos.domain.Produto;
 import com.lojavirtual.pedidos.domain.enums.FormaPagamento;
+import com.lojavirtual.pedidos.domain.enums.StatusPedido;
 import com.lojavirtual.pedidos.dtos.ItemPedidoRequest;
 import com.lojavirtual.pedidos.dtos.PedidoRequest;
 import com.lojavirtual.pedidos.dtos.PedidoResponse;
@@ -111,11 +113,119 @@ public class PedidoServiceTest {
 
         assertThrows(
                 RecursoNaoEncontradoException.class,
-                () -> pedidoService.cadastrar(pedidoRequest);
+                () -> pedidoService.cadastrar(pedidoRequest)
         );
 
         verify(clienteRepository).findById(1L);
         verifyNoInteractions(produtoRepository);
         verifyNoInteractions(pedidoRepository);
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoProdutoNaoExistir() {
+
+        Cliente cliente = new Cliente();
+        cliente.setId(1L);
+
+        ItemPedidoRequest itemRequest = new ItemPedidoRequest(
+                1L,
+                2
+        );
+
+        PedidoRequest pedidoRequest = new PedidoRequest(
+                1L,
+                List.of(itemRequest),
+                FormaPagamento.PIX
+        );
+
+        when(clienteRepository.findById(1L))
+                .thenReturn(Optional.of(cliente));
+
+        when(produtoRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(
+                RecursoNaoEncontradoException.class,
+                () -> pedidoService.cadastrar(pedidoRequest)
+        );
+
+        verify(clienteRepository).findById(1L);
+        verify(produtoRepository).findById(1L);
+        verifyNoInteractions(pedidoRepository);
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoEstoqueForInsuficiente() {
+
+        Cliente cliente = new Cliente();
+        cliente.setId(1L);
+
+        Produto produto = new Produto();
+        produto.setId(1L);
+        produto.setNome("Teclado");
+        produto.setPreco(new BigDecimal("100.00"));
+        produto.setQuantidadeEstoque(3);
+
+        ItemPedidoRequest itemRequest = new ItemPedidoRequest(
+                1L,
+                5
+        );
+
+        PedidoRequest pedidoRequest = new PedidoRequest(
+                1L,
+                List.of(itemRequest),
+                FormaPagamento.PIX
+        );
+
+        when(clienteRepository.findById(1L))
+                .thenReturn(Optional.of(cliente));
+
+        when(produtoRepository.findById(1L))
+                .thenReturn(Optional.of(produto));
+
+        assertThrows(
+                RecursoNaoEncontradoException.class,
+                () -> pedidoService.cadastrar(pedidoRequest)
+        );
+
+        assertEquals(3, produto.getQuantidadeEstoque());
+
+        verify(pedidoRepository, never()).save(any(Pedido.class));
+    }
+
+    @Test
+    void deveCancelarPedidoEDevolverProdutosAoEstoque() {
+
+        Cliente cliente = new Cliente();
+        cliente.setId(1L);
+
+        Produto produto = new Produto();
+        produto.setId(1L);
+        produto.setNome("Teclado");
+        produto.setPreco(new BigDecimal("100.00"));
+        produto.setQuantidadeEstoque(8);
+
+        ItemPedido item = new ItemPedido();
+        item.setProduto(produto);
+        item.setQuantidade(2);
+        item.setPrecoUnitario(new BigDecimal("100.00"));
+
+        Pedido pedido = new Pedido();
+        pedido.setId(1L);
+        pedido.setCliente(cliente);
+        pedido.setStatus(StatusPedido.ABERTO);
+        pedido.getItens().add(item);
+
+        item.setPedido(pedido);
+
+        when(pedidoRepository.findById(1L))
+                .thenReturn(Optional.of(pedido));
+
+        PedidoResponse response = pedidoService.cancelar(1L);
+
+        assertEquals(StatusPedido.CANCELADO, response.statusPedido());
+        assertEquals(10, produto.getQuantidadeEstoque());
+
+        verify(pedidoRepository).findById(1L);
     }
 }
