@@ -1,4 +1,4 @@
-package com.example.tarefas.dio;
+package com.example.tarefas.dio.singleton;
 
 public class SingletonLazyHolder {
 

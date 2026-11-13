@@ -16,7 +16,8 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(RegraDeNegocioException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.BAD_REQUEST
+    )
     public String tratarRegraDeNegocio(RegraDeNegocioException ex) {
         return ex.getMessage();
     }
