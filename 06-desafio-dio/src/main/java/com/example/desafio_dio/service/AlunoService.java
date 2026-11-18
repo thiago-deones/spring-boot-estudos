@@ -1,11 +1,14 @@
 package com.example.desafio_dio.service;
 
 import com.example.desafio_dio.entity.Aluno;
+import com.example.desafio_dio.entity.AvaliacaoFisica;
 import com.example.desafio_dio.entity.form.AlunoForm;
 import com.example.desafio_dio.entity.form.AlunoUpdateForm;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public interface AlunoService {
 
     Aluno create(AlunoForm form);
@@ -17,4 +20,6 @@ public interface AlunoService {
     Aluno update(Long id, AlunoUpdateForm formUpsdate);
 
     void delete(Long id);
+
+    List<AvaliacaoFisica> getAllAvaliacaoFisica(Long id);
 }
