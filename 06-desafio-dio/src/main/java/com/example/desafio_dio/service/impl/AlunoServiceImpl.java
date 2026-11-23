@@ -49,8 +49,9 @@ public class AlunoServiceImpl implements AlunoService {
     }
 
     @Override
-    public List<AvaliacaoFisica> getAllAvaliacaoFisica() {
-        repository.findAll();
+    public List<AvaliacaoFisica> getAllAvaliacaoFisica(Long id) {
         return List.of();
     }
+
+
 }
